@@ -299,6 +299,7 @@ void ScreenshotEditorFrame::CopyToClipboard() const {
 }
 
 void ScreenshotEditorFrame::SaveImage() {
+
     wxFileDialog saveFileDialog(nullptr, _("Salvar Imagem"), "", "",
                                 "PNG files (*.png)|*.png|JPEG files (*.jpg;*.jpeg)|*.jpg;*.jpeg",
                                 wxFD_SAVE|wxFD_OVERWRITE_PROMPT);
@@ -311,9 +312,24 @@ void ScreenshotEditorFrame::SaveImage() {
     wxBitmapType type = wxBITMAP_TYPE_PNG;
     if (ext == "jpg" || ext == "jpeg") {
         type = wxBITMAP_TYPE_JPEG;
+    }else {
+
     }
 
-    if (m_currentImage.SaveFile(path, type)) {
+    auto m_current_image = m_currentImage;
+
+    if (!m_selectionRect.IsEmpty()) {
+        wxRect imgRect(0, 0, m_current_image.GetWidth(), m_current_image.GetHeight());
+        wxRect sel = m_selectionRect;
+
+        sel.Intersect(imgRect);
+        if (!sel.IsEmpty()) {
+            // wxImage subImg = m_current_image.GetSubImage(sel);
+            m_current_image = m_current_image.GetSubImage(sel);
+        }
+    }
+
+    if (m_current_image.SaveFile(path, type)) {
          wxMessageBox("Imagem salva com sucesso!", "Salvar", wxOK | wxICON_INFORMATION);
     } else {
          wxMessageBox("Erro ao salvar a imagem.", "Erro", wxOK | wxICON_ERROR);
