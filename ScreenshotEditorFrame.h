@@ -22,6 +22,10 @@ enum {
     ID_DRAW_ARROW=201,
     ID_DRAW_RECTANGLE=201,
 
+    ID_COLOR_YELLOW = 300,
+    ID_COLOR_BLACK = 301,
+    ID_COLOR_RED = 302,
+    ID_COLOR_WHITE = 303
 };
 
 // =========================================================
@@ -40,6 +44,7 @@ private:
     wxPoint m_startPoint;
     wxRect m_selectionRect;
     bool m_isSelecting = false;
+    wxColor m_currentColor = *wxWHITE;
 
     // --- Protótipos dos Handlers de Eventos (Assinaturas) ---
     void OnPaint(wxPaintEvent& event);
@@ -48,6 +53,7 @@ private:
     void OnLeftUp(wxMouseEvent& event);
     void OnRightClick(wxMouseEvent& event);
     void OnMenuSelection(wxCommandEvent& event);
+    void OnColorSelect(wxCommandEvent& event);
 
     // --- Protótipos dos Métodos de Lógica de Edição (Assinaturas) ---
     void ApplyCrop();
