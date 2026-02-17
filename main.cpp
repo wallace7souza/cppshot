@@ -1,31 +1,8 @@
-#include <wx/wx.h>
 #include <wx/display.h>
-
 #include <wx/dcmemory.h>
-
-#include <wx/msgdlg.h>
-#include <wx/panel.h>
-#include <wx/dialog.h>
 #include <wx/dcclient.h>
-#include <wx/popupwin.h> // Para menu flutuante mais avançado (opcional)
-#include <algorithm>      // std::min
-#include <cmath>          // std::abs
-#include <wx/clipbrd.h>
-
+#include "App.h"
 #include "ScreenshotEditorFrame.h"
-
-// IDs para os comandos do menu
-
-// =========================================================
-// Classe Principal da Aplicação
-// =========================================================
-class MyApp : public wxApp {
-public:
-    virtual bool OnInit() override;
-
-private:
-    void CaptureAndLaunchEditor(int displayIndex);
-};
 
 // Inicialização da aplicação
 bool MyApp::OnInit() {
@@ -33,12 +10,19 @@ bool MyApp::OnInit() {
     wxImage::AddHandler(new wxPNGHandler);
     wxImage::AddHandler(new wxJPEGHandler);
 
+    RestartCapture();
+
+    return true;
+}
+
+// 4. Lógica de Captura
+void MyApp::RestartCapture() {
     // 1. Obter informações dos monitores
     int numDisplays = wxDisplay::GetCount();
 
     if (numDisplays == 0) {
         wxMessageBox("Nenhum monitor detectado.", "Erro", wxOK | wxICON_ERROR);
-        return false;
+        return;
     }
 
     int selectedDisplayIndex = 0;
@@ -56,7 +40,7 @@ bool MyApp::OnInit() {
                                                "Seleção de Monitor",
                                                choices);
 
-        if (selection.IsEmpty()) return false; // Usuário cancelou
+        if (selection.IsEmpty()) return; // Usuário cancelou
 
         // Encontra o índice selecionado
         selectedDisplayIndex = choices.Index(selection);
@@ -64,11 +48,8 @@ bool MyApp::OnInit() {
 
     // 3. Captura de tela e lançamento do editor
     CaptureAndLaunchEditor(selectedDisplayIndex);
-
-    return true;
 }
 
-// 4. Lógica de Captura
 void MyApp::CaptureAndLaunchEditor(int displayIndex) {
     wxDisplay display(displayIndex);
     wxRect rect = display.GetGeometry();

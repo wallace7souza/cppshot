@@ -25,7 +25,8 @@ enum {
     ID_COLOR_YELLOW = 300,
     ID_COLOR_BLACK = 301,
     ID_COLOR_RED = 302,
-    ID_COLOR_WHITE = 303
+    ID_COLOR_WHITE = 303,
+    ID_NEW_SCREENSHOT = 304
 };
 
 // =========================================================
@@ -54,6 +55,7 @@ private:
     void OnRightClick(wxMouseEvent& event);
     void OnMenuSelection(wxCommandEvent& event);
     void OnColorSelect(wxCommandEvent& event);
+    void OnNewScreenshot(wxCommandEvent& event);
 
     // --- Protótipos dos Métodos de Lógica de Edição (Assinaturas) ---
     void ApplyCrop();

@@ -1,4 +1,5 @@
 #include "ScreenshotEditorFrame.h"
+#include "App.h"
 #include <wx/dcclient.h>
 #include <wx/msgdlg.h>
 #include <wx/clipbrd.h>
@@ -26,24 +27,28 @@ ScreenshotEditorFrame::ScreenshotEditorFrame(const wxString& title, const wxImag
     wxBoxSizer* frameSizer = new wxBoxSizer(wxVERTICAL);
 
     // Barra de ferramentas simples para cores
-    wxBoxSizer* colorSizer = new wxBoxSizer(wxHORIZONTAL);
+    auto* colorSizer = new wxBoxSizer(wxHORIZONTAL);
     
-    wxButton* btnYellow = new wxButton(this, ID_COLOR_YELLOW, "", wxDefaultPosition, wxSize(30, 30));
+    auto* btnYellow = new wxButton(this, ID_COLOR_YELLOW, "", wxDefaultPosition, wxSize(30, 30));
     btnYellow->SetBackgroundColour(*wxYELLOW);
     
-    wxButton* btnBlack = new wxButton(this, ID_COLOR_BLACK, "", wxDefaultPosition, wxSize(30, 30));
+    auto* btnBlack = new wxButton(this, ID_COLOR_BLACK, "", wxDefaultPosition, wxSize(30, 30));
     btnBlack->SetBackgroundColour(*wxBLACK);
     
-    wxButton* btnRed = new wxButton(this, ID_COLOR_RED, "", wxDefaultPosition, wxSize(30, 30));
+    auto* btnRed = new wxButton(this, ID_COLOR_RED, "", wxDefaultPosition, wxSize(30, 30));
     btnRed->SetBackgroundColour(*wxRED);
     
-    wxButton* btnWhite = new wxButton(this, ID_COLOR_WHITE, "", wxDefaultPosition, wxSize(30, 30));
+    auto* btnWhite = new wxButton(this, ID_COLOR_WHITE, "", wxDefaultPosition, wxSize(30, 30));
     btnWhite->SetBackgroundColour(*wxWHITE);
+
+    auto* btnNew = new wxButton(this, ID_NEW_SCREENSHOT, "New screenshot", wxDefaultPosition, wxDefaultSize);
 
     colorSizer->Add(btnYellow, 0, wxALL, 2);
     colorSizer->Add(btnBlack, 0, wxALL, 2);
     colorSizer->Add(btnRed, 0, wxALL, 2);
     colorSizer->Add(btnWhite, 0, wxALL, 2);
+    colorSizer->AddSpacer(10);
+    colorSizer->Add(btnNew, 0, wxALL | wxALIGN_CENTER_VERTICAL, 2);
 
     frameSizer->Add(colorSizer, 0, wxALIGN_CENTER | wxTOP, 5);
     frameSizer->Add(m_panel, 1, wxEXPAND | wxALL, 10); // Margem de 10 pixels
@@ -64,6 +69,7 @@ ScreenshotEditorFrame::ScreenshotEditorFrame(const wxString& title, const wxImag
     Bind(wxEVT_BUTTON, &ScreenshotEditorFrame::OnColorSelect, this, ID_COLOR_BLACK);
     Bind(wxEVT_BUTTON, &ScreenshotEditorFrame::OnColorSelect, this, ID_COLOR_RED);
     Bind(wxEVT_BUTTON, &ScreenshotEditorFrame::OnColorSelect, this, ID_COLOR_WHITE);
+    Bind(wxEVT_BUTTON, &ScreenshotEditorFrame::OnNewScreenshot, this, ID_NEW_SCREENSHOT);
 
     // Define o tamanho inicial da janela e centraliza
     // Calcula o tamanho necessário: imagem + margens + barra de cores
@@ -183,6 +189,13 @@ void ScreenshotEditorFrame::OnColorSelect(wxCommandEvent& event) {
             m_currentColor = *wxWHITE;
             break;
     }
+}
+
+void ScreenshotEditorFrame::OnNewScreenshot(wxCommandEvent& WXUNUSED(event)) {
+    // Chama a lógica de reinício da aplicação
+    wxGetApp().RestartCapture();
+    // Fecha o frame atual
+    Close(true);
 }
 
 // =========================================================
